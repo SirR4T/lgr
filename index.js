@@ -61,11 +61,11 @@ function LGR(opts) {
         this._email = {
             'transport'         : NODEMAILER.createTransport('SMTP', this.opts.EMAIL.SMTPTRANSPORT),
             'specifications'    : {
-                from        : _.get(opts, 'EMAIL.FROM', 'lgr<lgr_npmmodule@paytm.com>'),
-                to          : opts.EMAIL.TO,
-                replyTo     : opts.EMAIL.REPLYTO,
-                subject     : opts.EMAIL.SUBJECT + " : " + new Date(),
-                headers     : opts.EMAIL.HEADERS,
+                from        : _.get(opts,'EMAIL.FROM',   'lgr<lgr_npmmodule@paytm.com>'),
+                to          : _.get(opts,'EMAIL.TO',     'lgr<lgr_npmmodule@paytm.com>'),
+                replyTo     : _.get(opts,'EMAIL.REPLYTO','lgr<lgr_npmmodule@paytm.com>'),
+                subject     : _.get(opts,'EMAIL.SUBJECT', new Date()) + ' :: ' + new Date(),
+                headers     : _.get(opts,'EMAIL.HEADERS', null),
                 text        : ''            
             },
         };
@@ -101,9 +101,14 @@ LGR.prototype.log = function(){
     setting data
 */
 LGR.prototype.email = function(data, buffer){
+    data = this._p() + data;
 
     // appending data to payload
     this.mailPayLoad += data + '\n';
+
+    if(buffer === false){
+        this._sendMails();
+    }    
 };
 
 
