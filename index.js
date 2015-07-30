@@ -8,7 +8,8 @@ var
     /* NPM Third Party */
     _                   = require('lodash'),
     NPMLOG              = require('npmlog'),
-    MOMENT              = require('moment');
+    MOMENT              = require('moment'),
+    NODEMAILER          = require('nodemailer');
     
     /* NPM Paytm */
     
@@ -47,6 +48,12 @@ function LGR(opts) {
     }.bind(this));
 
 
+    this.mailPayLoad = '';
+
+    
+    
+
+
 }
 
 // Override ALL LEVELS ... to have timestamp
@@ -61,6 +68,72 @@ LGR.prototype.log = function(){
     arguments[0] = this._p() + arguments[0];
     return this.NPMLOG['info'].apply(this, arguments);
 };
+
+/*
+    setting data
+*/
+LGR.prototype.email = function(data,cb){
+
+    // appending data to payload
+    this.mailPayLoad += data;
+
+    //setting time out for shooting mail
+    setTimeout(function(cb){
+     sendMAIL(cb);
+     this.mailPayLoad = '';
+    }, opts.EMAIL.setTimeoutTime);
+
+};
+
+/*
+    Send an eMail
+*/
+LGR.prototype.sendMAIL = function(cb){
+        //creating smtp transport
+        function tranporterFunction() {
+            return NODEMAILER.createTransport('SMTP', opts.EMAIL.SMTPTRANSPORT);
+        }
+        
+        //email specifics to be sent
+        function mailSpecificsFunction(data) {
+                return {
+                    from        : opts.EMAIL.FROM,
+                    to          : opts.EMAIL.TO,
+                    replyTo     : opts.EMAIL.REPLYTO,
+                    subject     : opts.EMAIL.SUBJECT + " : " + new Date(),
+                    headers     : opts.EMAIL.HEADERS,
+                    text        : this.mailPayLoad            
+                  };
+        }
+
+        /*
+            validating the opts(config)
+        */
+        //config not valid .... return the callback function
+
+        if(!(opts && opts.EMAIL && opts.EMAIL.SMTPTRANSPORT && opts.EMAIL.TO))
+            if(cb && typeof(cb) == 'function')  return cb("Incorrect config");
+            else                                return;
+
+        var
+                tranporter      = tranporterFunction(),
+                mailSpecifics   = mailSpecificsFunction(data);
+
+        //sending the electronic mail with specified config
+        return tranporter.sendMail(mailSpecifics, function(err, res) {
+                console.log('Email Sent to : '  + JSON.stringify(opts.EMAIL.SMTPTRANSPORT)    +
+                        '\nMail Subject '       + mail.subject                                  +
+                        '\nError: '             + err                                           +
+                        '\nResponse: '          + JSON.stringify(res));
+
+                //return the callback function
+                if(cb && typeof(cb) == 'function')  return cb(err, res);
+                else                                return;
+        });        
+
+}
+
+
 
 /* Sets log format for a user */
 LGR.prototype.setLogFormat = function(val){
@@ -79,3 +152,8 @@ LGR.prototype._p = function(){
 };
 
 module.exports = new LGR();
+
+
+
+
+       
