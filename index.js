@@ -101,15 +101,12 @@ LGR.prototype.log = function(){
 /*
     setting data
 */
-LGR.prototype.email = function(data, buffer){
-    data = this._p() + data;
+LGR.prototype.email = function(data, sendImmediately){
+    if(sendImmediately === undefined) sendImmediately = false;
 
-    // appending data to payload
-    this.mailPayLoad += data + '\n';
+    this.mailPayLoad += this._p() + data + '\n';
 
-    if(buffer === false){
-        this._sendMails();
-    }    
+    if(sendImmediately === true) this._sendMails();
 };
 
 
