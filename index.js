@@ -56,6 +56,33 @@ function LGR(opts) {
     */
     this.mailPayLoad = '';
 
+    /* lets see if mail config is there */
+    if(_.get(this, 'opts.EMAIL', null)) {
+
+        this._email = {
+            'transport'         : NODEMAILER.createTransport('SMTP', this.opts.EMAIL.SMTPTRANSPORT),
+            'specifications'    : {
+                from        : _.get(opts, 'EMAIL.FROM', 'lgr<lgr_npmmodule@paytm.com>'),
+                to          : opts.EMAIL.TO,
+                replyTo     : opts.EMAIL.REPLYTO,
+                subject     : opts.EMAIL.SUBJECT + " : " + new Date(),
+                headers     : opts.EMAIL.HEADERS,
+                text        : ''            
+            },
+        };
+
+
+        /*
+            Start a setInterval process which will send emails periodically
+        */
+        setInterval(function(){
+            // check if something to send
+            if( this.mailPayLoad.length > 0) {
+                this._sendMails();
+            }
+        }.bind(this), _.get(opts, 'EMAIL.setTimeoutTime', 10000));
+    } // if email
+
 }
 
 // Override ALL LEVELS ... to have timestamp
@@ -74,70 +101,24 @@ LGR.prototype.log = function(){
 /*
     setting data
 */
-LGR.prototype.email = function(data,cb){
+LGR.prototype.email = function(data, buffer){
 
     // appending data to payload
-    this.mailPayLoad += data;
-
-    //setting time out for shooting mail
-    setTimeout(function(cb){
-     sendMAIL(cb);
-     this.mailPayLoad = '';
-    }, opts.EMAIL.setTimeoutTime);
-
+    this.mailPayLoad += data + '\n';
 };
 
-
-//creating smtp transport
-LGR.prototype.__tranporterFunction = function(cb) {
-    return NODEMAILER.createTransport('SMTP', opts.EMAIL.SMTPTRANSPORT);
-};
 
 /*
-    Send an eMail
+    Send eMails periodically
 */
-LGR.prototype._sendMAIL = function(cb) {
-        
-        
-        //email specifics to be sent
-        function mailSpecificsFunction(data) {
-                return {
-                    from        : opts.EMAIL.FROM,
-                    to          : opts.EMAIL.TO,
-                    replyTo     : opts.EMAIL.REPLYTO,
-                    subject     : opts.EMAIL.SUBJECT + " : " + new Date(),
-                    headers     : opts.EMAIL.HEADERS,
-                    text        : this.mailPayLoad            
-                  };
-        }
+LGR.prototype._sendMails = function() {
 
-        /*
-            validating the opts(config)
-        */
-        //config not valid .... return the callback function
+    //sending the electronic mail with specified config
+    this._email.specifications.text = _.cloneDeep(this.mailPayLoad);
+    this.mailPayLoad = '';
+    this._email.transport.sendMail(this._email.specifications,function(err, res) {});        
 
-        if(!(opts && opts.EMAIL && opts.EMAIL.SMTPTRANSPORT && opts.EMAIL.TO))
-            if(cb && typeof(cb) == 'function')  return cb("Incorrect config");
-            else                                return;
-
-        var
-                tranporter      = tranporterFunction(),
-                mailSpecifics   = mailSpecificsFunction(data);
-
-        //sending the electronic mail with specified config
-        return tranporter.sendMail(mailSpecifics, function(err, res) {
-                console.log('Email Sent to : '  + JSON.stringify(opts.EMAIL.SMTPTRANSPORT)    +
-                        '\nMail Subject '       + mail.subject                                  +
-                        '\nError: '             + err                                           +
-                        '\nResponse: '          + JSON.stringify(res));
-
-                //return the callback function
-                if(cb && typeof(cb) == 'function')  return cb(err, res);
-                else                                return;
-        });        
-
-}
-
+};
 
 
 /* Sets log format for a user */
