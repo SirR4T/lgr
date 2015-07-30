@@ -18,6 +18,8 @@ var
 function LGR(opts) {
     this.NPMLOG = NPMLOG;
 
+    this.opts = opts;
+
     /*
         maintain internal count
     */
@@ -48,11 +50,11 @@ function LGR(opts) {
     }.bind(this));
 
 
+    /*
+        Lets instantiate this variable with empty string.
+        We will keep on adding to this string so that we can send a mail
+    */
     this.mailPayLoad = '';
-
-    
-    
-
 
 }
 
@@ -85,14 +87,17 @@ LGR.prototype.email = function(data,cb){
 
 };
 
+
+//creating smtp transport
+LGR.prototype.__tranporterFunction = function(cb) {
+    return NODEMAILER.createTransport('SMTP', opts.EMAIL.SMTPTRANSPORT);
+};
+
 /*
     Send an eMail
 */
-LGR.prototype.sendMAIL = function(cb){
-        //creating smtp transport
-        function tranporterFunction() {
-            return NODEMAILER.createTransport('SMTP', opts.EMAIL.SMTPTRANSPORT);
-        }
+LGR.prototype._sendMAIL = function(cb) {
+        
         
         //email specifics to be sent
         function mailSpecificsFunction(data) {
