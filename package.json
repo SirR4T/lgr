@@ -26,6 +26,7 @@
   "dependencies": {
     "npmlog": "~1.2.1",
     "lodash": "~3.10.0",
-    "moment": "~2.10.3"
+    "moment": "~2.10.3",
+    "nodemailer": "~0.7.0"
   }
 }

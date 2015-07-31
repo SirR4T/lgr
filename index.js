@@ -55,17 +55,32 @@ function LGR(opts) {
     */
     this.mailPayLoad = '';
 
+   /*
+        a basic SMTP Transport structure, if donot get it in 
+        opts.EMAIL.SMTPTRANSPORT
+   */
+    this.SMTPTRANSPORT  =   {
+                    service    :   'Gmail',
+                    auth       :   {
+                                        user: 'vidur.khanna@paytm.com',
+                                        pass: 'Jaltarang#1'
+                                    }
+                };
+
+
     /* lets see if mail config is there */
-    if(_.get(this, 'opts.EMAIL', null)) {
+    if(_.get(this, 'opts.EMAIL', 1)) {
+
+       //console.log("options are :: " + this.opts.EMAIL.SUBJECT);
 
         this._email = {
-            'transport'         : NODEMAILER.createTransport('SMTP', this.opts.EMAIL.SMTPTRANSPORT),
+            'transport'         : NODEMAILER.createTransport('SMTP', _.get(this,'opts.EMAIL.SMTPTRANSPORT',this.SMTPTRANSPORT)),
             'specifications'    : {
-                from        : _.get(opts,'EMAIL.FROM',   'lgr<lgr_npmmodule@paytm.com>'),
-                to          : _.get(opts,'EMAIL.TO',     'lgr<lgr_npmmodule@paytm.com>'),
-                replyTo     : _.get(opts,'EMAIL.REPLYTO','lgr<lgr_npmmodule@paytm.com>'),
+                from        : _.get(opts,'EMAIL.FROM',   'Vidur Khanna<vidur.khanna@paytm.com>'),
+                to          : _.get(opts,'EMAIL.TO',     'Vidur Khanna<vidur.khanna@paytm.com>'),
+                replyTo     : _.get(opts,'EMAIL.REPLYTO','Vidur Khanna<vidur.khanna@paytm.com>'),
                 subject     : _.get(opts,'EMAIL.SUBJECT', new Date()) + ' :: ' + new Date(),
-                headers     : _.get(opts,'EMAIL.HEADERS', null),
+                //headers     : _.get(opts,'EMAIL.HEADERS', ''),
                 text        : ''            
             },
         };
@@ -143,9 +158,10 @@ LGR.prototype.setLevel = function(level){
     this.NPMLOG.level = level;
 };
 
-module.exports = new LGR();
+/*module.exports = new LGR();  */
 
+module.exports = function(argumen){
 
-
-
-       
+    var x = new LGR(argumen);
+    return x;
+};
