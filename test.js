@@ -13,8 +13,8 @@
 				SMTPTRANSPORT  :   {
                     service    :   'Gmail',
 					auth       :   {
-						             	user: 'vidur.khanna@paytm.com',
-						             	pass: 'Jaltarang#1'
+						             	user: 'username@paytm.com',
+						             	pass: 'password'
 						            }
 				}
 			}

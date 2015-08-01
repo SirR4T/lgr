@@ -62,8 +62,8 @@ function LGR(opts) {
     this.SMTPTRANSPORT  =   {
                     service    :   'Gmail',
                     auth       :   {
-                                        user: 'vidur.khanna@paytm.com',
-                                        pass: 'Jaltarang#1'
+                                        user: 'username@gmail.com',
+                                        pass: 'pass'
                                     }
                 };
 
