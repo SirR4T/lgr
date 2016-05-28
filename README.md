@@ -1,7 +1,7 @@
 # lgr
 Generic Logger
 
-[![Build Status](https://travis-ci.org/paytm/lgr.svg?branch=master)](https://travis-ci.org/paytm/lgr)
+[![Build Status](https://travis-ci.org/SirR4T/lgr.svg?branch=master)](https://travis-ci.org/SirR4T/lgr)
 [![Coverage Status](https://coveralls.io/repos/github/SirR4T/lgr/badge.svg?branch=master)](https://coveralls.io/github/SirR4T/lgr?branch=master)
 
 Idea is to give best of Winston, Bunyan and [npmlog](https://github.com/npm/npmlog)
