@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://@github.com:paytm/lgr.git"
+    "url": "git+ssh://@github.com:SirR4T/lgr.git"
   },
   "keywords": [
     "paytm",
@@ -20,9 +20,9 @@
   "author": "Shrey Agarwal",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/paytm/lgr/issues"
+    "url": "https://github.com/SirR4T/lgr/issues"
   },
-  "homepage": "https://github.com/paytm/lgr",
+  "homepage": "https://github.com/SirR4T/lgr",
   "dependencies": {
     "lodash": "~4.13.1",
     "moment": "~2.13.0",
